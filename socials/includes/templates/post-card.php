@@ -165,17 +165,21 @@ $noImgGrad   = $isTwitter ? 'from-gray-800 to-[#0a0a0a]' : 'from-surface-border 
                     $fullText = implode("\n\n", $parts);
                 ?>
                 <div class="mt-2">
+                    <?php
+                        $modalData = json_encode([
+                            "row_number"  => $post["row_number"] ?? 0,
+                            "source_file" => $sf,
+                            "titulo"      => $post["Titulo"] ?? "",
+                            "texto"       => $fullText,
+                            "hashtags"    => $post["hashtags"] ?? "",
+                            "fotos"       => !empty($post["url_image"]) ? [$post["url_image"]] : []
+                        ], JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT);
+                    ?>
                     <button class="w-full py-2 rounded-lg text-xs font-semibold cursor-pointer transition-all duration-200
                                    bg-violet-500/20 text-violet-400 border border-violet-500/30
                                    hover:bg-violet-500 hover:text-black hover:border-violet-500"
-                            onclick='openPostModal(<?= htmlspecialchars(json_encode([
-                                "row_number" => $post["row_number"] ?? 0,
-                                "source_file" => $sf,
-                                "titulo"   => $post["Titulo"] ?? "",
-                                "texto"    => $fullText,
-                                "hashtags" => $post["hashtags"] ?? "",
-                                "fotos"    => !empty($post["url_image"]) ? [$post["url_image"]] : []
-                            ], JSON_UNESCAPED_UNICODE), ENT_QUOTES) ?>)'>
+                            data-postdata="<?= htmlspecialchars($modalData, ENT_QUOTES, 'UTF-8') ?>"
+                            onclick="openPostModal(JSON.parse(this.getAttribute('data-postdata')))">
                         🚀 Post
                     </button>
                 </div>

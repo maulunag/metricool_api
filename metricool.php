@@ -158,6 +158,36 @@ class MetricoolPoster {
         return $this->makeRequest('/v2/scheduler/posts?blogId=' . $blogId, 'POST', $postData);
     }
 
+    public function createPostTwitter($blogId, $titulo, $cuerpo, $hashtags, $mediaUrls, $dateTime) {
+        
+        // CONSTRUCCIÓN DEL TEXTO: Unimos las 3 partes con saltos de línea
+        $finalText = $titulo . "\n\n" . $cuerpo . "\n\n" . $hashtags;
+
+        // Media: array de URLs
+        $mediaArray = [];
+        foreach ($mediaUrls as $url) {
+            if ($url) $mediaArray[] = $url;
+        }
+
+        // Providers debe ser un array de objetos ProviderStatus con propiedad 'network'
+        $providers = [
+            ['network' => 'twitter'],
+            ['network' => 'threads']
+        ];
+
+        $postData = [
+            'targetBrandId' => $blogId, 
+            'text' => $finalText, 
+            'publicationDate' => ['dateTime' => $dateTime],
+            'draft' => false,
+            'media' => $mediaArray,
+            'saveExternalMediaFiles' => true, // Permite usar URLs externas
+            'providers' => $providers
+        ];
+
+        return $this->makeRequest('/v2/scheduler/posts?blogId=' . $blogId, 'POST', $postData);
+    }
+
     /**
      * Crear Video en YouTube (Estándar)
      */

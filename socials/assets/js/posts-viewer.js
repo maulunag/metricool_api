@@ -110,22 +110,47 @@ function openPostModal(postData) {
     document.getElementById('pm-foto').value = fotoUrl;
 
     // Image preview
-    var preview = document.getElementById('pm-preview');
-    if (fotoUrl) {
-        preview.innerHTML = '<img src="' + fotoUrl + '" alt="Preview">';
+    updateModalPreview(fotoUrl);
+
+    // Target label
+    var isTwitter = _currentPostSourceFile && _currentPostSourceFile.indexOf('twitter_posts_') === 0;
+    var target = document.getElementById('pm-target');
+    target.textContent = isTwitter ? '→ X (Twitter) + Threads' : '→ Facebook, Instagram, LinkedIn, Google';
+
+    // Platform badges
+    var badges = document.getElementById('pm-platforms');
+    if (isTwitter) {
+        badges.innerHTML =
+            '<span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-white/10 text-white text-[10px] font-semibold">𝕏 X</span>' +
+            '<span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-white/10 text-white text-[10px] font-semibold">🔗 Threads</span>';
     } else {
-        preview.innerHTML = '';
+        badges.innerHTML =
+            '<span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-blue-600/20 text-blue-400 text-[10px] font-semibold">f Facebook</span>' +
+            '<span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-pink-500/20 text-pink-400 text-[10px] font-semibold">📷 Instagram</span>' +
+            '<span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-sky-500/20 text-sky-400 text-[10px] font-semibold">in LinkedIn</span>' +
+            '<span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-amber-500/20 text-amber-400 text-[10px] font-semibold">G Google</span>';
     }
 
     // Reset status
     var status = document.getElementById('pm-status');
-    status.className = 'pm-status';
+    status.className = 'pm-status hidden';
     status.textContent = '';
 
     // Enable submit
     document.getElementById('pm-submit').disabled = false;
 
     document.getElementById('postModal').classList.add('active');
+}
+
+function updateModalPreview(url) {
+    var container = document.getElementById('pm-preview-img');
+    if (url) {
+        container.innerHTML = '<img src="' + url + '" alt="Preview" class="w-full object-cover" onerror="this.parentElement.innerHTML=\'<div class=\\\'w-full aspect-square bg-gradient-to-br from-surface-border to-surface-light flex flex-col items-center justify-center text-gray-600 gap-2\\\'><span class=\\\'text-xs\\\'>Image failed to load</span></div>\'">';
+    } else {
+        container.innerHTML = '<div class="w-full aspect-square bg-gradient-to-br from-surface-border to-surface-light flex flex-col items-center justify-center text-gray-600 gap-2">' +
+            '<svg class="w-10 h-10 opacity-40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z"/></svg>' +
+            '<span class="text-xs">No image</span></div>';
+    }
 }
 
 function closePostModal() {
@@ -148,26 +173,40 @@ function submitPost() {
         return;
     }
 
-    // Show loading
-    status.className = 'pm-status loading';
-    status.textContent = '⏳ Publishing to Metricool...';
-    submitBtn.disabled = true;
+    // Determine action based on source file
+    var isTwitter = _currentPostSourceFile && _currentPostSourceFile.indexOf('twitter_posts_') === 0;
+    var action = isTwitter ? 'post_twitter' : 'post_general';
+    var endpoint = '../post_now.php';
 
     var payload = {
-        action: 'post_general',
+        action: action,
         titulo: titulo,
         texto: texto,
         hashtags: hashtags,
         fotos: foto ? [foto] : []
     };
 
-    fetch('../post_now.php', {
+    // Log endpoint and payload to console
+    console.log('=== POST TO METRICOOL ===');
+    console.log('Endpoint:', endpoint);
+    console.log('Action:', action);
+    console.log('Source file:', _currentPostSourceFile);
+    console.log('Payload:', JSON.stringify(payload, null, 2));
+    console.log('=========================');
+
+    // Show loading
+    status.className = 'pm-status loading';
+    status.textContent = '⏳ Publishing to Metricool...';
+    submitBtn.disabled = true;
+
+    fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     })
         .then(function (r) { return r.json(); })
         .then(function (data) {
+            console.log('Response:', data);
             if (data.error) {
                 status.className = 'pm-status error';
                 status.textContent = '❌ Error: ' + data.error;
@@ -210,11 +249,5 @@ function submitPost() {
 
 // Update preview when image URL changes
 document.getElementById('pm-foto').addEventListener('input', function () {
-    var preview = document.getElementById('pm-preview');
-    var url = this.value.trim();
-    if (url) {
-        preview.innerHTML = '<img src="' + url + '" alt="Preview" onerror="this.parentElement.innerHTML=\'\'">';
-    } else {
-        preview.innerHTML = '';
-    }
+    updateModalPreview(this.value.trim());
 });

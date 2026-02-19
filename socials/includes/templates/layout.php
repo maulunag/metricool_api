@@ -20,7 +20,7 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/posts-viewer.css">
+    <link rel="stylesheet" href="assets/css/posts-viewer.css?v=<?= filemtime(__DIR__ . '/../../assets/css/posts-viewer.css') ?>">
 </head>
 <body class="bg-[#0f0f13] text-gray-300 font-['Inter',sans-serif] min-h-screen">
 
@@ -133,7 +133,7 @@
 <!-- Modal Post to Metricool -->
 <?php include __DIR__ . '/post-modal.php'; ?>
 
-<script src="assets/js/posts-viewer.js"></script>
+<script src="assets/js/posts-viewer.js?v=<?= filemtime(__DIR__ . '/../../assets/js/posts-viewer.js') ?>"></script>
 <script>
     function toggleSidebar() {
         var sidebar = document.getElementById('sidebar');

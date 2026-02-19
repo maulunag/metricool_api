@@ -31,6 +31,7 @@ if (!is_array($input)) {
  */
 $validServices = [
     'post_general',
+    'post_twitter',
     'youtube_video',
     'youtube_short',
     'tiktok',
@@ -94,9 +95,20 @@ switch ($action) {
         $response = publicarInstagramReel($api, $targetBlogId, $reelText, $reelUrl);
         break;
 
+    case 'post_twitter':
+        // Required fields: titulo, texto, hashtags, fotos
+        $twTitulo = $input['titulo'] ?? '';
+        $twTexto = $input['texto'] ?? '';
+        $twHashtags = $input['hashtags'] ?? '';
+        $twFotos = $input['fotos'] ?? [];
+        $targetBlogId = $input['blogId'] ?? $blogId;
+
+        $response = publicarPostTwitter($api, $targetBlogId, $twTitulo, $twTexto, $twHashtags, $twFotos);
+        break;
+
     default:
         http_response_code(400);
-        $response = ['error' => "Unknown action: '$action'. Valid actions: post_general, youtube_video, youtube_short, tiktok, instagram_reel"];
+        $response = ['error' => "Unknown action: '$action'. Valid actions: post_general, post_twitter, youtube_video, youtube_short, tiktok, instagram_reel"];
         break;
 }
 

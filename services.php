@@ -117,3 +117,23 @@ function publicarInstagramReel($api, $blogId, $text, $videoUrl) {
         return "Error en Instagram Reel: " . $e->getMessage();
     }
 }
+
+/**
+ * 6. PUBLICACIÓN TWITTER / THREADS (X + Threads)
+ */
+function publicarPostTwitter($api, $blogId, $titulo, $texto, $hashtags, $fotos) {
+    try {
+        $fecha = generarFechaAleatoria();
+        
+        return $api->createPostTwitter(
+            $blogId,
+            $titulo,
+            $texto,
+            $hashtags,
+            $fotos,
+            $fecha
+        );
+    } catch (Exception $e) {
+        return "Error en Post Twitter/Threads: " . $e->getMessage();
+    }
+}
