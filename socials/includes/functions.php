@@ -25,6 +25,17 @@ function getPostFiles(string $jsonDir): array {
 }
 
 /**
+ * Extract ISO date from filename for sorting.
+ * e.g. "posts_Thursday_2026-02-19T08:00:45.033-05:00.json" → "2026-02-19T08:00:45"
+ */
+function extractDateFromFilename(string $filename): string {
+    if (preg_match('/(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})/', $filename, $m)) {
+        return $m[1];
+    }
+    return '0000-00-00T00:00:00';
+}
+
+/**
  * Build an index of row_number|Slug → filename for resolving legacy decisions.
  */
 function buildPostIndex(string $jsonDir): array {
@@ -98,7 +109,12 @@ function loadDecisions(string $jsonDir): array {
  */
 function loadPendingPosts(string $jsonDir, array $decisionMap): array {
     $files = getPostFiles($jsonDir);
-    rsort($files); // newest files first (filenames contain timestamps)
+    // Sort newest first by embedded ISO timestamp in filename
+    usort($files, function($a, $b) {
+        $dateA = extractDateFromFilename(basename($a));
+        $dateB = extractDateFromFilename(basename($b));
+        return strcmp($dateB, $dateA); // descending
+    });
     $byFile = [];
     $total = 0;
 
@@ -121,7 +137,7 @@ function loadPendingPosts(string $jsonDir, array $decisionMap): array {
         }
 
         if (!empty($pending)) {
-            $byFile[$fname] = $pending;
+            $byFile[$fname] = array_reverse($pending);
         }
     }
 
