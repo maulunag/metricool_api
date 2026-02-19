@@ -98,6 +98,7 @@ function loadDecisions(string $jsonDir): array {
  */
 function loadPendingPosts(string $jsonDir, array $decisionMap): array {
     $files = getPostFiles($jsonDir);
+    rsort($files); // newest files first (filenames contain timestamps)
     $byFile = [];
     $total = 0;
 
