@@ -167,12 +167,20 @@ $noImgGrad   = $isTwitter ? 'from-gray-800 to-[#0a0a0a]' : 'from-surface-border 
                 <div class="mt-2">
                     <?php
                         $modalData = json_encode([
-                            "row_number"  => $post["row_number"] ?? 0,
-                            "source_file" => $sf,
-                            "titulo"      => $post["Titulo"] ?? "",
-                            "texto"       => $fullText,
-                            "hashtags"    => $post["hashtags"] ?? "",
-                            "fotos"       => !empty($post["url_image"]) ? [$post["url_image"]] : []
+                            "row_number"       => $post["row_number"] ?? 0,
+                            "source_file"      => $sf,
+                            "slug"             => $post["Slug"] ?? "",
+                            "titulo"           => $post["Titulo"] ?? "",
+                            "resumen"          => $post["Resumen"] ?? "",
+                            "contenido"        => $post["Contenido"] ?? "",
+                            "texto"            => $fullText,
+                            "hashtags"         => $post["hashtags"] ?? "",
+                            "categoria"        => $post["categoria"] ?? "",
+                            "url_image"        => $post["url_image"] ?? "",
+                            "promt_idea_image" => $post["promt_idea_image"] ?? "",
+                            "fecha_registro"   => $post["Fecha_Registro"] ?? "",
+                            "status"           => $post["status"] ?? "",
+                            "fotos"            => !empty($post["url_image"]) ? [$post["url_image"]] : []
                         ], JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT);
                     ?>
                     <button class="w-full py-2 rounded-lg text-xs font-semibold cursor-pointer transition-all duration-200

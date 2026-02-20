@@ -37,6 +37,10 @@
     display: flex !important;
 }
 
+#dbDetailModal.active {
+    display: flex !important;
+}
+
 /* --- Post modal status messages (JS toggle) --- */
 .pm-status.success {
     display: block !important;

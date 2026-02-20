@@ -245,6 +245,16 @@ function loadViewData(string $jsonDir, string $currentView): array {
     $decisions = loadDecisions($jsonDir);
     $pending = loadPendingPosts($jsonDir, $decisions['map']);
 
+    // Count DB posts (graceful fail if DB not available)
+    $countDbPosts = 0;
+    try {
+        require_once dirname(__DIR__, 2) . '/database/db_config.php';
+        $pdo = getDbConnection();
+        $countDbPosts = (int) $pdo->query("SELECT COUNT(*) FROM metricool_posts")->fetchColumn();
+    } catch (Exception $e) {
+        $countDbPosts = '—';
+    }
+
     return [
         'currentView'      => $currentView,
         'pendingByFile'    => $pending['byFile'],
@@ -255,5 +265,6 @@ function loadViewData(string $jsonDir, string $currentView): array {
         'countRejected'    => count($decisions['rejected']),
         'sentPosts'        => $decisions['sentMetricool'],
         'countSent'        => count($decisions['sentMetricool']),
+        'countDbPosts'     => $countDbPosts,
     ];
 }

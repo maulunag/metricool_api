@@ -98,10 +98,12 @@ function decide(rowNumber, decision, slug, titulo, sourceFile) {
 // --- Post to Metricool Modal ---
 var _currentPostRowNumber = null;
 var _currentPostSourceFile = null;
+var _currentPostData = {};
 
 function openPostModal(postData) {
     _currentPostRowNumber = postData.row_number || null;
     _currentPostSourceFile = postData.source_file || '';
+    _currentPostData = postData;
     document.getElementById('pm-titulo').value = postData.titulo || '';
     document.getElementById('pm-texto').value = postData.texto || '';
     document.getElementById('pm-hashtags').value = postData.hashtags || '';
@@ -157,6 +159,7 @@ function closePostModal() {
     document.getElementById('postModal').classList.remove('active');
     _currentPostRowNumber = null;
     _currentPostSourceFile = null;
+    _currentPostData = {};
 }
 
 function submitPost() {
@@ -183,7 +186,18 @@ function submitPost() {
         titulo: titulo,
         texto: texto,
         hashtags: hashtags,
-        fotos: foto ? [foto] : []
+        fotos: foto ? [foto] : [],
+        // Extra fields for MySQL storage
+        row_number: _currentPostData.row_number || null,
+        source_file: _currentPostSourceFile,
+        slug: _currentPostData.slug || '',
+        resumen: _currentPostData.resumen || '',
+        contenido: _currentPostData.contenido || '',
+        categoria: _currentPostData.categoria || '',
+        url_image: _currentPostData.url_image || '',
+        promt_idea_image: _currentPostData.promt_idea_image || '',
+        fecha_registro: _currentPostData.fecha_registro || '',
+        status: _currentPostData.status || ''
     };
 
     // Log endpoint and payload to console
