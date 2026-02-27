@@ -224,8 +224,7 @@ var _currentFilter = 'all';
 var _datePreset = 0; // 0=all, 7, 30, 90
 var _deleteTopicId = null;
 var API_URL = '../database/topics_api.php';
-var GEMINI_API_KEY = 'AIzaSyCvFBn-GM4LrRNZ0V2ybX5th-BaGjb-190';
-var GEMINI_MODEL = 'gemini-2.0-flash';
+var AI_PROXY_URL = '../database/ai_proxy.php';
 
 // ── STATUS HELPERS ──────────────────────────────────────────────
 function statusBadge(status) {
@@ -274,7 +273,7 @@ function generateDescription() {
 
     var prompt = 'You are a social media content strategist. Given the following topic title, generate:\n1. A concise and compelling description (2-3 sentences) that outlines the key points to cover when creating content about this topic. Be specific and actionable.\n2. A list of 4-6 relevant keywords (single words or short phrases), comma-separated.\n3. A single category that best classifies this topic.\n\nRespond ONLY with valid JSON in this exact format, no markdown, no code fences:\n{"description": "...", "keywords": "keyword1, keyword2, keyword3", "category": "..."}\n\nTopic: ' + title;
 
-    fetch('https://generativelanguage.googleapis.com/v1beta/models/' + GEMINI_MODEL + ':generateContent?key=' + GEMINI_API_KEY, {
+    fetch(AI_PROXY_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
