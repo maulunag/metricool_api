@@ -120,6 +120,20 @@
                                  bg-cyan-500/20 text-cyan-400"><?= $data['countDbPosts'] ?? '—' ?></span>
                 </a>
             </li>
+            <li>
+                <a href="?view=topics-gen" onclick="closeSidebar()"
+                   class="group flex items-center justify-between px-5 py-3 text-sm transition-all duration-200 border-l-[3px]
+                          <?= $data['currentView'] === 'topics-gen'
+                              ? 'bg-amber-400/10 text-amber-400 border-amber-400 font-semibold'
+                              : 'text-gray-500 border-transparent hover:bg-white/[0.04] hover:text-gray-300' ?>">
+                    <span class="flex items-center gap-2.5">
+                        <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg>
+                        Topics Gen
+                    </span>
+                    <span class="text-xs font-bold px-2.5 py-0.5 rounded-full min-w-[26px] text-center
+                                 bg-amber-500/20 text-amber-400"><?= $data['countTopics'] ?? '—' ?></span>
+                </a>
+            </li>
         </ul>
     </nav>
     <div class="px-5 py-4 border-t border-surface-border">
